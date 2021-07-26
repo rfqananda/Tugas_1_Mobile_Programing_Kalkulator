@@ -1,0 +1,146 @@
+package com.rifqiananda.aplikasikalkulator
+
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
+import android.view.Window
+import android.view.WindowManager
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import net.objecthunter.exp4j.Expression
+import net.objecthunter.exp4j.ExpressionBuilder
+import java.lang.Exception
+
+
+class MainActivity : AppCompatActivity()
+{
+    lateinit var tv_result : TextView
+    lateinit var tv_expression : TextView
+
+    lateinit var dot : Button
+    lateinit var nol : Button
+    lateinit var satu : Button
+    lateinit var dua : Button
+    lateinit var tiga : Button
+    lateinit var empat : Button
+    lateinit var lima : Button
+    lateinit var enam: Button
+    lateinit var tujuh : Button
+    lateinit var lapan : Button
+    lateinit var sembilan : Button
+
+    lateinit var tambah : Button
+    lateinit var kurang : Button
+    lateinit var bagi : Button
+    lateinit var kali : Button
+    lateinit var persen : Button
+    lateinit var hasil : Button
+
+    lateinit var clear : Button
+    lateinit var delete : Button
+    override fun onCreate(savedInstanceState: Bundle?)
+    {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        //Numbers
+        nol.setOnClickListener{appendOnExpression("0", true)}
+        satu.setOnClickListener{appendOnExpression("1", true)}
+        dua.setOnClickListener{appendOnExpression("2", true)}
+        tiga.setOnClickListener{appendOnExpression("3", true)}
+        empat.setOnClickListener{appendOnExpression("4", true)}
+        lima.setOnClickListener{appendOnExpression("5", true)}
+        enam.setOnClickListener{appendOnExpression("6", true)}
+        tujuh.setOnClickListener{appendOnExpression("7", true)}
+        lapan.setOnClickListener{appendOnExpression("8", true)}
+        sembilan.setOnClickListener{appendOnExpression("9", true)}
+
+        //Operators
+        tambah.setOnClickListener{appendOnExpression("+", false)}
+        kurang.setOnClickListener{appendOnExpression("-", false)}
+        bagi.setOnClickListener{appendOnExpression("/", false)}
+        kali.setOnClickListener{appendOnExpression("*", false)}
+        persen.setOnClickListener{appendOnExpression("%", false)}
+
+        clear.setOnClickListener{
+            tv_expression.text = ""
+            tv_result.text = ""
+        }
+
+        delete.setOnClickListener {
+            val string = tv_expression.text.toString()
+            if(string.isNotEmpty())
+            {
+                tv_expression.text = string.substring(0, string.length-1)
+            }
+            tv_result.text = ""
+        }
+
+        hasil.setOnClickListener {
+            try
+            {
+                val expression = ExpressionBuilder(tv_expression.text.toString()).build()
+                val result = expression.evaluate()
+                val longResult = result.toLong()
+                if (result == longResult.toDouble())
+                    tv_result.text = longResult.toString()
+                else
+                    tv_result.text = result.toString()
+            }
+            catch (e:Exception)
+            {
+                Log.d("Exception", "message : " + e.message)
+            }
+        }
+    }
+
+    fun init()
+    {
+        tv_result = findViewById(R.id.tvResult)
+        tv_expression = findViewById(R.id.tvExpression)
+
+        nol = findViewById(R.id.btn_0)
+        satu = findViewById(R.id.btn_1)
+        dua = findViewById(R.id.btn_2)
+        tiga = findViewById(R.id.btn_3)
+        empat = findViewById(R.id.btn_4)
+        lima = findViewById(R.id.btn_5)
+        enam = findViewById(R.id.btn_6)
+        tujuh = findViewById(R.id.btn_7)
+        lapan= findViewById(R.id.btn_8)
+        sembilan = findViewById(R.id.btn_9)
+        dot = findViewById(R.id.btn_dot)
+
+        tambah = findViewById(R.id.btn_plus)
+        kurang = findViewById(R.id.btn_minus)
+        bagi = findViewById(R.id.btn_divide)
+        kali = findViewById(R.id.btn_multiplication)
+        persen = findViewById(R.id.btn_percent)
+        hasil = findViewById(R.id.btn_equal)
+
+        clear = findViewById(R.id.btn_clear)
+        delete = findViewById(R.id.btn_delete)
+
+    }
+
+    fun appendOnExpression (string: String, canClear: Boolean)
+    {
+        if (tv_result.text.isNotEmpty())
+        {
+            tv_expression.text = ""
+        }
+
+        if(canClear)
+        {
+            tv_result.text = ""
+        }
+        else
+        {
+            tv_expression.append(tv_result.text)
+            tv_expression.append(string)
+            tv_result.text = ""
+        }
+    }
+
+}
